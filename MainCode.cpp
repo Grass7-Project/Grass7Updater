@@ -171,7 +171,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 
 	std::wstring szBuffer1WS = szBuffer1;
 
-	if (platformID1W != szBuffer1WS) {
+	if (platformID1W.find(szBuffer1WS) == std::string::npos) {
 		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandle(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandle(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandle(NULL), IDS_NOT_FOR_THIS), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		gr7::DeleteDirectory(gr7::convertchar(bufferp));
 		memset(bufferp, 0, sizeof(bufferp));
