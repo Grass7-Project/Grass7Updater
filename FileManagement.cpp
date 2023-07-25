@@ -16,7 +16,7 @@ int extract(const char *filename)
 		};
 		bit7z::BitExtractor extractor{ lib, bit7z::BitFormat::SevenZip };
 		
-		extractor.extract(gr7::convertchar(filename), _T("./"));
+		extractor.extract(archivefile, _T("./"));
 		memset(archivefile, 0, sizeof(archivefile));
 	}
 	catch (const bit7z::BitException& ex) {
