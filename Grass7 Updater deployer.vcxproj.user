@@ -2,7 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>"C:\TestUpdate.gr7updpkg"</LocalDebuggerCommandArguments>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>
+    <RemoteDebuggerCommand>C:\remotetemp\gr7upd.exe</RemoteDebuggerCommand>
+    <RemoteDebuggerCommandArguments>"C:\TestUpdate.gr7updpkg"</RemoteDebuggerCommandArguments>
+    <RemoteDebuggerWorkingDirectory>C:\remotetemp</RemoteDebuggerWorkingDirectory>
+    <RemoteDebuggerServerName>TEST-PC:4020</RemoteDebuggerServerName>
+    <DeploymentDirectory>C:\remotetemp</DeploymentDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>true</ShowAllFiles>

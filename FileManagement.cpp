@@ -12,11 +12,11 @@ int extract(const char *filename)
 	try {
 
 		bit7z::Bit7zLibrary lib{
-			_T("7za.dll")
+			L"7za.dll"
 		};
 		bit7z::BitExtractor extractor{ lib, bit7z::BitFormat::SevenZip };
-		
-		extractor.extract(archivefile, _T("./"));
+
+		extractor.extract(archivefile, L"./");
 		memset(archivefile, 0, sizeof(archivefile));
 	}
 	catch (const bit7z::BitException& ex) {
