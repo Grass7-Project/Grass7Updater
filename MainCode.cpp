@@ -1,16 +1,17 @@
-// The code to open and extract the up
+// The code to open and extract the update package
 
 #include "stdafx.h"
 #include "FileManagement.h"
 #include "MainCode.h"
 #include "GUIDraw.h"
+#include "Global.h"
 #include <algorithm>
 #include <shlobj.h>
 #include <regex>
 #include <vector>
 #include <filesystem>
 
-int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t *lpCmdLine)
+int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t *lpCmdLine)
 {
 	wchar_t fgh[256] = { 0 };
 	CHAR buffer2[256];
@@ -21,7 +22,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	const char *updfile = s.c_str();
 	Sleep(2000);
 	if (gr7::GetSystemDriveLetter() == "") {
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_NOT_INSTALLED), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.NotInstalled, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
@@ -32,19 +33,19 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	SetCurrentDirectoryW(bufferp);
 	wcsncpy_s(fgh, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(fgh));
 	wcsncat_s(fgh, L"Windows\\System32", sizeof(fgh));
-	int archiveerr = extract(updfile);
+	int archiveerr = FileManagementClass::extract(updfile);
 	if (archiveerr != 0) {
 		SetCurrentDirectoryW(fgh);
 		memset(fgh, 0, sizeof(fgh));
 		gr7::DeleteDirectory(bufferp);
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_ARCHIVE_FAIL), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.ArchiveFail, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(hProgressText, 0, sizeof(hProgressText));
 		memset(bufferp, 0, sizeof(bufferp));
 		exit(0);
 	}
 
 	// We load and parse the config file
-	// We have to do a diarrhea way of doing this, not proud of this one, there is likely a better way but i was very angry at the time that it didnt work so i did diarrhea.
+	// We have to do a diarrhea way of doing this, not proud of this one, there is likely a better way but i was very angry at the time that it didnt work so i did this fucking shit.
 	char bufferpf[256] = { 0 };
 	strncpy_s(bufferpf, gr7::GetSystemDriveLetter(), sizeof(bufferpf));
 	strncat_s(bufferpf, "gr7updatefld\\Update.conf", sizeof(bufferpf));
@@ -129,7 +130,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 #endif
 
 	if (lineArch != specificarch) {
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_ARCH_NOT_MATCH), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.ArchNotMatch, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		gr7::DeleteDirectory(bufferp);
 		memset(bufferp, 0, sizeof(bufferp));
 		memset(hProgressText, 0, sizeof(hProgressText));
@@ -147,7 +148,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	memset(bufferreg, 0, sizeof(bufferreg));
 	if (lResult == ERROR_SUCCESS)
 	{
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_ALREADY_INSTALLED), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.AlreadyInstalled, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		gr7::DeleteDirectory(bufferp);
 		memset(bufferp, 0, sizeof(bufferp));
 		memset(hProgressText, 0, sizeof(hProgressText));
@@ -160,7 +161,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	LONG lResult1 = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Software\\Grass7\\CurrentVersion", 0, KEY_READ, &hkey1d);
 	if (lResult1 != ERROR_SUCCESS)
 	{
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_FAIL_OPEN_KEY), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.FailOpenKey, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		gr7::DeleteDirectory(bufferp);
 		memset(bufferp, 0, sizeof(bufferp));
 		memset(hProgressText, 0, sizeof(hProgressText));
@@ -184,7 +185,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	std::wstring szBuffer1WS = szBuffer1;
 
 	if (platformID1W.find(szBuffer1WS) == std::string::npos) {
-		TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_NOT_FOR_THIS), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.NotForThis, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		gr7::DeleteDirectory(bufferp);
 		memset(bufferp, 0, sizeof(bufferp));
 		memset(hProgressText, 0, sizeof(hProgressText));
@@ -203,10 +204,10 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 		{
 			TCHAR ErrorString[MAX_PATH];
 
-			wcscpy_s(ErrorString, MAX_PATH, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPD_REQ1));
+			wcscpy_s(ErrorString, MAX_PATH, AppResStringsObjects.UpdateReq1);
 			wcscat_s(ErrorString, MAX_PATH, RequiredUpd);
-			wcscat_s(ErrorString, MAX_PATH, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPD_REQ2));
-			TaskDialog(NULL, NULL, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_OSNAME), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_UPDATER_ERROR), ErrorString, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+			wcscat_s(ErrorString, MAX_PATH, AppResStringsObjects.UpdateReq2);
+			TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, ErrorString, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 			gr7::DeleteDirectory(bufferp);
 			memset(bufferp, 0, sizeof(bufferp));
 			memset(hProgressText, 0, sizeof(hProgressText));
@@ -223,11 +224,11 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 	platformID1.clear();
 	platformID1W.clear();
 	memset(bufferp, 0, sizeof(bufferp));
-	CreateQuestion();
+	GUIDraw::CreateQuestion();
 	::ShowWindow(hWnd, SW_SHOWDEFAULT);
 	::UpdateWindow(hWnd);
 	int percentageCounter = 0;
-	updateProgressBar(percentageCounter, hProgressBar, hWnd, hProgressText);
+	GUIDraw::updateProgressBar(percentageCounter, hProgressBar, hWnd, hProgressText);
 
 	wchar_t sysdir[256] = { 0 };
 	wcsncpy_s(sysdir, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(sysdir));
@@ -269,7 +270,7 @@ int mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t
 
 	ShellExecuteExW(&ShExecInfo2);
 	percentageCounter = 100;
-	updateProgressBar(percentageCounter, hProgressBar, hWnd, hProgressText);
+	GUIDraw::updateProgressBar(percentageCounter, hProgressBar, hWnd, hProgressText);
 	memset(hProgressText, 0, sizeof(hProgressText));
 	WaitForSingleObject(ShExecInfo2.hProcess, INFINITE);
 	CloseHandle(ShExecInfo2.hProcess);

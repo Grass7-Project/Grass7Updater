@@ -6,8 +6,11 @@
 #include <bitextractor.hpp>
 #include <bitexception.hpp>
 
-int extract(const char *filename)
+FileManagementClass FileManagementObjects;
+
+int FileManagementClass::extract(const char *filename)
 {
+	FileManagementObjects.pwdProceed = 0;
 	wchar_t *archivefile = gr7::convertchar(filename);
 	try {
 
@@ -15,12 +18,15 @@ int extract(const char *filename)
 			L"7za.dll"
 		};
 		bit7z::BitExtractor extractor{ lib, bit7z::BitFormat::SevenZip };
-
+		
 		extractor.extract(archivefile, L"./");
 		memset(archivefile, 0, sizeof(archivefile));
 	}
 	catch (const bit7z::BitException& ex) {
 		ex.getErrorCode();
+		return 1;
+	}
+	if (FileManagementObjects.pwdProceed != 1) {
 		return 1;
 	}
 	return 0;

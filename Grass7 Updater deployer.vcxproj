@@ -179,7 +179,8 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)depends\$(Platform)\*.*" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\$(Platform)\*.*" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
+"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /v /f "C:\Users\Genki\CertStuff\gr7SPC.pfx" /t http://timestamp.comodoca.com/authenticode /p nothereongithub "$(SolutionDir)$(Platform)\$(Configuration)\$(targetfilename)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -212,7 +213,8 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)depends\$(Platform)\*.*" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\$(Platform)\*.*" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
+"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /v /f "C:\Users\Genki\CertStuff\gr7SPC.pfx" /t http://timestamp.comodoca.com/authenticode /p nothereongithub "$(SolutionDir)$(Platform)\$(Configuration)\$(targetfilename)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>
@@ -226,6 +228,7 @@
   <ItemGroup>
     <ClInclude Include="FileManagement.h" />
     <ClInclude Include="getopt.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="GUIDraw.h" />
     <ClInclude Include="MainCode.h" />
     <ClInclude Include="meta_random.hpp" />

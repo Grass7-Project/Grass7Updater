@@ -18,4 +18,6 @@
 #include <fstream>
 #include <Gr7API.h>
 
-// TODO: reference additional headers your program requires here
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
