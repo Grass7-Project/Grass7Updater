@@ -18,7 +18,6 @@ int FileManagementClass::extract(const char *filename)
 			L"7za.dll"
 		};
 		bit7z::BitExtractor extractor{ lib, bit7z::BitFormat::SevenZip };
-		
 		extractor.extract(archivefile, L"./");
 		memset(archivefile, 0, sizeof(archivefile));
 	}
