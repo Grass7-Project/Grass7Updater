@@ -40,11 +40,15 @@ void GUIDraw::updateProgressBar(int percentageCounter, HWND hProgressBar, HWND h
 
 void GUIDraw::CreateQuestion()
 {
-	wchar_t bufferpg[256] = { 0 };
-	wchar_t bufferp[256] = { 0 };
-	wcsncpy_s(bufferp, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(bufferp));
+	wchar_t bufferpg[MAX_PATH] = { 0 };
+	wchar_t bufferp[MAX_PATH] = { 0 };
+
+	WCHAR driveletter[MAX_PATH];
+	gr7::GetSystemDriveLetterW(driveletter);
+
+	wcsncpy_s(bufferp, driveletter, sizeof(bufferp));
 	wcsncat_s(bufferp, L"gr7updatefld", sizeof(bufferp));
-	wcsncpy_s(bufferpg, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(bufferpg));
+	wcsncpy_s(bufferpg, driveletter, sizeof(bufferpg));
 	wcsncat_s(bufferpg, L"Windows\\System32", sizeof(bufferpg));
 	int respond = 0;
 	TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.Question, NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);

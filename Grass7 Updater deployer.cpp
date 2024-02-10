@@ -9,7 +9,7 @@
 GlobalMain MainObjects;
 GlobalAppResStrings AppResStringsObjects;
 
-TCHAR wcs[256];
+TCHAR wcs[MAX_PATH];
 
 LRESULT
 CALLBACK
@@ -41,6 +41,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 {
 	MainObjects.hInst = hInstance;
 	GUIDraw::LoadStrings();
+
+	WCHAR driveletter[MAX_PATH];
+	gr7::GetSystemDriveLetterW(driveletter);
+
     if (!SUCCEEDED(gr7::ModifyPrivilege(SE_RESTORE_NAME, TRUE, GetCurrentProcess()))) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.PrivilageError, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
@@ -51,12 +55,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		exit(0);
 	}
 
-	if(gr7::GetSystemDriveLetter() == "") {
+	if(driveletter == L"") {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.NotInstalled, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
-	char bufferp[256] = { 0 };
-	strncpy_s(bufferp, gr7::GetSystemDriveLetter(), sizeof(bufferp));
+	char bufferp[MAX_PATH] = { 0 };
+	std::wstring wstr_driveletter = driveletter;
+	std::string str_driveletter = gr7::WStringToString(wstr_driveletter);
+	strncpy_s(bufferp, str_driveletter.c_str(), sizeof(bufferp));
 	strncat_s(bufferp, "gr7updatefld", sizeof(bufferp));
 
 	if(gr7::dirExists(bufferp) == 1) {

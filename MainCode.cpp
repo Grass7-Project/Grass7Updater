@@ -13,25 +13,27 @@
 
 int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t *lpCmdLine)
 {
-	wchar_t fgh[256] = { 0 };
-	CHAR buffer2[256];
+	WCHAR driveletter[MAX_PATH];
+	gr7::GetSystemDriveLetterW(driveletter);
+	wchar_t fgh[MAX_PATH] = { 0 };
+	CHAR buffer2[MAX_PATH];
 	size_t strlength;
 	wcstombs_s(&strlength, buffer2, lpCmdLine, 256);
 	std::string s(buffer2);
 	s.erase(std::remove(s.begin(), s.end(), '"'), s.end());
 	const char *updfile = s.c_str();
 	Sleep(2000);
-	if (gr7::GetSystemDriveLetter() == "") {
+	if (driveletter == L"") {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.NotInstalled, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
-	wchar_t bufferp[256] = { 0 };
-	wcsncpy_s(bufferp, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(bufferp));
+	wchar_t bufferp[MAX_PATH] = { 0 };
+	wcsncpy_s(bufferp, driveletter, sizeof(bufferp));
 	wcsncat_s(bufferp, L"gr7updatefld", sizeof(bufferp));
 	CreateDirectoryW(bufferp, NULL);
 	SetCurrentDirectoryW(bufferp);
-	wcsncpy_s(fgh, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(fgh));
+	wcsncpy_s(fgh, driveletter, sizeof(fgh));
 	wcsncat_s(fgh, L"Windows\\System32", sizeof(fgh));
 	int archiveerr = FileManagementClass::extract(updfile);
 	if (archiveerr != 0) {
@@ -46,9 +48,9 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 
 	// We load and parse the config file
 	// We have to do a diarrhea way of doing this, not proud of this one, there is likely a better way but i was very angry at the time that it didnt work so i did this fucking shit.
-	char bufferpf[256] = { 0 };
-	strncpy_s(bufferpf, gr7::GetSystemDriveLetter(), sizeof(bufferpf));
-	strncat_s(bufferpf, "gr7updatefld\\Update.conf", sizeof(bufferpf));
+	WCHAR bufferpf[256];
+	wcsncpy_s(bufferpf, driveletter, sizeof(bufferpf));
+	wcsncat_s(bufferpf, L"gr7updatefld\\Update.conf", sizeof(bufferpf));
 	std::ifstream ifs(bufferpf);
 	memset(bufferpf, 0, sizeof(bufferpf));
 	std::string updateID = "UpdateID=";
@@ -204,9 +206,9 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 		{
 			TCHAR ErrorString[MAX_PATH];
 
-			wcscpy_s(ErrorString, MAX_PATH, AppResStringsObjects.UpdateReq1);
-			wcscat_s(ErrorString, MAX_PATH, RequiredUpd);
-			wcscat_s(ErrorString, MAX_PATH, AppResStringsObjects.UpdateReq2);
+			wcscpy_s(ErrorString, sizeof(ErrorString), AppResStringsObjects.UpdateReq1);
+			wcscat_s(ErrorString, sizeof(ErrorString), RequiredUpd);
+			wcscat_s(ErrorString, sizeof(ErrorString), AppResStringsObjects.UpdateReq2);
 			TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, ErrorString, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 			gr7::DeleteDirectory(bufferp);
 			memset(bufferp, 0, sizeof(bufferp));
@@ -231,13 +233,13 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 	GUIDraw::updateProgressBar(percentageCounter, hProgressBar, hWnd, hProgressText);
 
 	wchar_t sysdir[256] = { 0 };
-	wcsncpy_s(sysdir, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(sysdir));
+	wcsncpy_s(sysdir, driveletter, sizeof(sysdir));
 	wcsncat_s(sysdir, L"Windows\\System32", sizeof(sysdir));
 	SetCurrentDirectoryW(bufferp);
 
 	if (enableOScommands == 1) {
 		wchar_t cmddlol[256] = { 0 };
-		wcsncpy_s(cmddlol, gr7::convertchar(gr7::GetSystemDriveLetter()), sizeof(cmddlol));
+		wcsncpy_s(cmddlol, driveletter, sizeof(cmddlol));
 		wcsncat_s(cmddlol, L"gr7updatefld\\OScommands.bat", sizeof(cmddlol));
 
 		SHELLEXECUTEINFO ShExecInfo;
