@@ -9,22 +9,22 @@ public:
 // Application Resource Strings
 class GlobalAppResStrings {
 public:
-	wchar_t *OSName;
-	wchar_t *PrivilageError;
-	wchar_t *NotInstalled;
-	wchar_t *Installing;
-	wchar_t *FileListAccessError;
-	wchar_t *UpdateInProgress;
-	wchar_t *UpdaterError;
-	wchar_t *Question;
-	wchar_t *AlreadyInstalled;
-	wchar_t *ArchNotMatch;
-	wchar_t *ArchiveFail;
-	wchar_t *NoInternet;
-	wchar_t *UpdateReq1;
-	wchar_t *UpdateReq2;
-	wchar_t *FailOpenKey;
-	wchar_t *NotForThis;
+	std::wstring OSName;
+	std::wstring PrivilageError;
+	std::wstring NotInstalled;
+	std::wstring Installing;
+	std::wstring FileListAccessError;
+	std::wstring UpdateInProgress;
+	std::wstring UpdaterError;
+	std::wstring Question;
+	std::wstring AlreadyInstalled;
+	std::wstring ArchNotMatch;
+	std::wstring ArchiveFail;
+	std::wstring NoInternet;
+	std::wstring UpdateReq1;
+	std::wstring UpdateReq2;
+	std::wstring FailOpenKey;
+	std::wstring NotForThis;
 };
 
 extern GlobalMain MainObjects;

@@ -8,10 +8,9 @@
 
 FileManagementClass FileManagementObjects;
 
-int FileManagementClass::extract(const char *filename)
+int FileManagementClass::extract(LPCWSTR archivefile)
 {
 	FileManagementObjects.pwdProceed = 0;
-	wchar_t *archivefile = gr7::convertchar(filename);
 	try {
 
 		bit7z::Bit7zLibrary lib{
@@ -19,7 +18,6 @@ int FileManagementClass::extract(const char *filename)
 		};
 		bit7z::BitExtractor extractor{ lib, bit7z::BitFormat::SevenZip };
 		extractor.extract(archivefile, L"./");
-		memset(archivefile, 0, sizeof(archivefile));
 	}
 	catch (const bit7z::BitException& ex) {
 		ex.getErrorCode();

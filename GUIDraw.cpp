@@ -32,7 +32,7 @@ void GUIDraw::updateProgressBar(int percentageCounter, HWND hProgressBar, HWND h
 	wcsncat_s(percantage, L"%", 5);
 	::SendMessage(hProgressBar, PBM_SETPOS, (WPARAM)(INT)percentageCounter, 0);
 	wcscpy_s(ProgressText, hProgressText);
-	wcsncat_s(ProgressText, AppResStringsObjects.Installing, 24);
+	wcsncat_s(ProgressText, AppResStringsObjects.Installing.c_str(), 24);
 	wcsncat_s(ProgressText, percantage, 256);
 	OnSomeActionToRefreshValues(hWnd, ProgressText);
 	::UpdateWindow(hWnd);
@@ -44,14 +44,14 @@ void GUIDraw::CreateQuestion()
 	wchar_t bufferp[MAX_PATH] = { 0 };
 
 	WCHAR driveletter[MAX_PATH];
-	gr7::GetSystemDriveLetterW(driveletter);
+	gr7::GetSystemDriveLetter(driveletter);
 
 	wcsncpy_s(bufferp, driveletter, sizeof(bufferp));
 	wcsncat_s(bufferp, L"gr7updatefld", sizeof(bufferp));
 	wcsncpy_s(bufferpg, driveletter, sizeof(bufferpg));
 	wcsncat_s(bufferpg, L"Windows\\System32", sizeof(bufferpg));
 	int respond = 0;
-	TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.Question, NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);
+	TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.Question.c_str(), NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);
 	if(respond != IDYES) {
 		SetCurrentDirectory(bufferpg);
 		gr7::DeleteDirectory(bufferp);
@@ -61,24 +61,4 @@ void GUIDraw::CreateQuestion()
 	}
 	memset(bufferpg, 0, sizeof(bufferpg));
 	memset(bufferp, 0, sizeof(bufferp));
-}
-
-void GUIDraw::LoadStrings()
-{
-	AppResStringsObjects.OSName = gr7::LoadStringToW(MainObjects.hInst, IDS_OSNAME);
-	AppResStringsObjects.PrivilageError = gr7::LoadStringToW(MainObjects.hInst, IDS_PRIVILAGE_ERROR);
-	AppResStringsObjects.NotInstalled = gr7::LoadStringToW(MainObjects.hInst, IDS_NOT_INSTALLED);
-	AppResStringsObjects.Installing = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING);
-	AppResStringsObjects.FileListAccessError = gr7::LoadStringToW(MainObjects.hInst, IDS_FILE_LIST_ACCESS_ERROR);
-	AppResStringsObjects.UpdateInProgress = gr7::LoadStringToW(MainObjects.hInst, IDS_UPDATE_IN_PROGRESS);
-	AppResStringsObjects.UpdaterError = gr7::LoadStringToW(MainObjects.hInst, IDS_UPDATER_ERROR);
-	AppResStringsObjects.Question = gr7::LoadStringToW(MainObjects.hInst, IDS_QUESTION);
-	AppResStringsObjects.AlreadyInstalled = gr7::LoadStringToW(MainObjects.hInst, IDS_ALREADY_INSTALLED);
-	AppResStringsObjects.ArchNotMatch = gr7::LoadStringToW(MainObjects.hInst, IDS_ARCH_NOT_MATCH);
-	AppResStringsObjects.ArchiveFail = gr7::LoadStringToW(MainObjects.hInst, IDS_ARCHIVE_FAIL);
-	AppResStringsObjects.NoInternet = gr7::LoadStringToW(MainObjects.hInst, IDS_NO_INTERNET);
-	AppResStringsObjects.UpdateReq1 = gr7::LoadStringToW(MainObjects.hInst, IDS_UPD_REQ1);
-	AppResStringsObjects.UpdateReq2 = gr7::LoadStringToW(MainObjects.hInst, IDS_UPD_REQ2);
-	AppResStringsObjects.FailOpenKey = gr7::LoadStringToW(MainObjects.hInst, IDS_FAIL_OPEN_KEY);
-	AppResStringsObjects.NotForThis = gr7::LoadStringToW(MainObjects.hInst, IDS_NOT_FOR_THIS);
 }

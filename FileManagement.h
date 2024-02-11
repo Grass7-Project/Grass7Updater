@@ -1,6 +1,6 @@
 class FileManagementClass {
 public:
-	static int extract(const char *filename);
+	static int extract(LPCWSTR archivefile);
 private:
 	int pwdProceed;
 };

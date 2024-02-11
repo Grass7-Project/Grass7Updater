@@ -2,6 +2,7 @@
 #include "FileManagement.h"
 #include "MainCode.h"
 #include "GUIDraw.h"
+#include "ResourceLoader.h"
 #include "Global.h"
 #include <sdkddkver.h>
 #include <vector>
@@ -40,33 +41,31 @@ WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
 	MainObjects.hInst = hInstance;
-	GUIDraw::LoadStrings();
+	ResourceLoader::LoadStrings();
 
 	WCHAR driveletter[MAX_PATH];
-	gr7::GetSystemDriveLetterW(driveletter);
+	gr7::GetSystemDriveLetter(driveletter);
 
     if (!SUCCEEDED(gr7::ModifyPrivilege(SE_RESTORE_NAME, TRUE, GetCurrentProcess()))) {
-		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.PrivilageError, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.PrivilageError.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
 
     if (!SUCCEEDED(gr7::ModifyPrivilege(SE_BACKUP_NAME, TRUE, GetCurrentProcess()))) {
-		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.PrivilageError, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.PrivilageError.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
 
 	if(driveletter == L"") {
-		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.NotInstalled, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.NotInstalled.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
 	char bufferp[MAX_PATH] = { 0 };
 	std::wstring wstr_driveletter = driveletter;
-	std::string str_driveletter = gr7::WStringToString(wstr_driveletter);
-	strncpy_s(bufferp, str_driveletter.c_str(), sizeof(bufferp));
-	strncat_s(bufferp, "gr7updatefld", sizeof(bufferp));
+	wstr_driveletter.append(L"gr7updatefld");
 
-	if(gr7::dirExists(bufferp) == 1) {
-		TaskDialog(NULL, NULL, AppResStringsObjects.OSName, AppResStringsObjects.UpdaterError, AppResStringsObjects.UpdateInProgress, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+	if(gr7::dirExists(wstr_driveletter.c_str()) == 1) {
+		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.UpdateInProgress.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(bufferp, 0, sizeof(bufferp));
 		exit(0);
 	}
@@ -101,7 +100,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	HWND hWnd = ::CreateWindowExW(
 		0,
 		L"GRASS7UPDATER",
-		AppResStringsObjects.OSName,
+		AppResStringsObjects.OSName.c_str(),
 		WS_OVERLAPPED | WS_CAPTION,
 		0,
 		0,
@@ -131,7 +130,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		hInstance,
 		NULL);
 
-	wcsncat_s(wcs, AppResStringsObjects.Installing, 256);
+	wcsncat_s(wcs, AppResStringsObjects.Installing.c_str(), 256);
 	wcsncat_s(wcs, L"0%", 256);
 	::SendMessageW(hSmoothProgressCtrl, PBM_SETPOS, (WPARAM)(INT)0, 0);
 	MainCodeClass::mainCode(hSmoothProgressCtrl, hWnd, wcs, lpCmdLine);
