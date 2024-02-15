@@ -40,25 +40,16 @@ void GUIDraw::updateProgressBar(int percentageCounter, HWND hProgressBar, HWND h
 
 void GUIDraw::CreateQuestion()
 {
-	wchar_t bufferpg[MAX_PATH] = { 0 };
-	wchar_t bufferp[MAX_PATH] = { 0 };
+	std::wstring updatefolder = MainObjects.driveletter;
+	updatefolder.append(L"gr7updatefld");
+	std::wstring sys32dir = MainObjects.driveletter;
+	sys32dir.append(L"Windows\\System32");
 
-	WCHAR driveletter[MAX_PATH];
-	gr7::GetSystemDriveLetter(driveletter);
-
-	wcsncpy_s(bufferp, driveletter, sizeof(bufferp));
-	wcsncat_s(bufferp, L"gr7updatefld", sizeof(bufferp));
-	wcsncpy_s(bufferpg, driveletter, sizeof(bufferpg));
-	wcsncat_s(bufferpg, L"Windows\\System32", sizeof(bufferpg));
 	int respond = 0;
 	TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.Question.c_str(), NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);
 	if(respond != IDYES) {
-		SetCurrentDirectory(bufferpg);
-		gr7::DeleteDirectory(bufferp);
-		memset(bufferpg, 0, sizeof(bufferpg));
-		memset(bufferp, 0, sizeof(bufferp));
+		SetCurrentDirectoryW(sys32dir.c_str());
+		gr7::DeleteDirectory(updatefolder.c_str());
 		exit(0);
 	}
-	memset(bufferpg, 0, sizeof(bufferpg));
-	memset(bufferp, 0, sizeof(bufferp));
 }

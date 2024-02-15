@@ -13,25 +13,26 @@
 
 int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t *lpCmdLine)
 {
-	WCHAR driveletter[MAX_PATH];
-	gr7::GetSystemDriveLetter(driveletter);
+	std::wstring driveletterD(MAX_PATH, 0);
+	driveletterD.resize((size_t)gr7::GetSystemDriveLetter(&driveletterD[0]));
+	MainObjects.driveletter = driveletterD;
 
 	std::wstring lpCmdLineW = lpCmdLine;
 	lpCmdLineW.erase(std::remove(lpCmdLineW.begin(), lpCmdLineW.end(), L'"'), lpCmdLineW.end());
 	Sleep(2000);
 
-	if (driveletter == L"") {
+	if (MainObjects.driveletter == L"") {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.NotInstalled.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
-	std::wstring updatefld = driveletter;
+	std::wstring updatefld = MainObjects.driveletter;
 	updatefld.append(L"gr7updatefld");
 
 	CreateDirectoryW(updatefld.c_str(), NULL);
 	SetCurrentDirectoryW(updatefld.c_str());
 
-	std::wstring system32fld = driveletter;
+	std::wstring system32fld = MainObjects.driveletter;
 	system32fld.append(L"Windows\\System32");
 
 	int archiveerr = FileManagementClass::extract(lpCmdLineW.c_str());
@@ -45,7 +46,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 
 	// We load and parse the config file
 	// We have to do a diarrhea way of doing this, not proud of this one, there is likely a better way but i was very angry at the time that it didnt work so i did this fucking shit.
-	std::wstring UpdateConfigFile = driveletter;
+	std::wstring UpdateConfigFile = MainObjects.driveletter;
 	UpdateConfigFile.append(L"gr7updatefld\\Update.conf");
 
 	std::wifstream ifs(UpdateConfigFile);
@@ -167,12 +168,11 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 		LONG lResult = RegOpenKeyExW(HKEY_LOCAL_MACHINE, RequiredUpdateReg.c_str(), 0, KEY_READ, &hkey1);
 		if (lResult != ERROR_SUCCESS)
 		{
-			TCHAR ErrorString[MAX_PATH];
+			std::wstring ErrorString = AppResStringsObjects.UpdateReq1;
+			ErrorString.append(lineRequiredupdateW);
+			ErrorString.append(AppResStringsObjects.UpdateReq2);
 
-			wcscpy_s(ErrorString, sizeof(ErrorString), AppResStringsObjects.UpdateReq1.c_str());
-			wcscat_s(ErrorString, sizeof(ErrorString), lineRequiredupdateW.c_str());
-			wcscat_s(ErrorString, sizeof(ErrorString), AppResStringsObjects.UpdateReq2.c_str());
-			TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), ErrorString, TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
+			TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), ErrorString.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 			gr7::DeleteDirectory(updatefld.c_str());
 			memset(hProgressText, 0, sizeof(hProgressText));
 			exit(0);
@@ -192,16 +192,15 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 	SetCurrentDirectoryW(updatefld.c_str());
 
 	if (enableOScommands == 1) {
-		wchar_t cmddlol[256] = { 0 };
-		wcsncpy_s(cmddlol, driveletter, sizeof(cmddlol));
-		wcsncat_s(cmddlol, L"gr7updatefld\\OScommands.bat", sizeof(cmddlol));
+		std::wstring cmddlol = MainObjects.driveletter;
+		cmddlol.append(L"gr7updatefld\\OScommands.bat");
 
 		SHELLEXECUTEINFO ShExecInfo;
 		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 		ShExecInfo.hwnd = NULL;
 		ShExecInfo.lpVerb = L"open";
-		ShExecInfo.lpFile = cmddlol;
+		ShExecInfo.lpFile = cmddlol.c_str();
 		ShExecInfo.lpParameters = L"";
 		ShExecInfo.lpDirectory = system32fld.c_str();
 		ShExecInfo.nShow = SW_HIDE;
@@ -209,7 +208,6 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 		ShellExecuteExW(&ShExecInfo);
 		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 		CloseHandle(ShExecInfo.hProcess);
-		memset(cmddlol, 0, sizeof(cmddlol));
 	}
 
 	// We reboot to winRE
