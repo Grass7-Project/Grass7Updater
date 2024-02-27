@@ -44,14 +44,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	ResourceLoader::LoadStrings();
 
 	WCHAR driveletter[MAX_PATH];
-	gr7::GetSystemDriveLetter(driveletter);
+	Grass7API::FileManagement::GetSystemDriveLetter(driveletter);
 
-    if (!SUCCEEDED(gr7::ModifyPrivilege(SE_RESTORE_NAME, TRUE, GetCurrentProcess()))) {
+    if (!SUCCEEDED(Grass7API::Privilege::ModifyPrivilege(SE_RESTORE_NAME, TRUE, GetCurrentProcess()))) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.PrivilageError.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
 
-    if (!SUCCEEDED(gr7::ModifyPrivilege(SE_BACKUP_NAME, TRUE, GetCurrentProcess()))) {
+    if (!SUCCEEDED(Grass7API::Privilege::ModifyPrivilege(SE_BACKUP_NAME, TRUE, GetCurrentProcess()))) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.PrivilageError.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		exit(0);
 	}
@@ -64,7 +64,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	std::wstring wstr_driveletter = driveletter;
 	wstr_driveletter.append(L"gr7updatefld");
 
-	if(gr7::dirExists(wstr_driveletter.c_str()) == 1) {
+	if(Grass7API::FileManagement::dirExists(wstr_driveletter.c_str()) == 1) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.UpdateInProgress.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(bufferp, 0, sizeof(bufferp));
 		exit(0);

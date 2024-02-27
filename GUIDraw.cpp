@@ -49,7 +49,7 @@ void GUIDraw::CreateQuestion()
 	TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.Question.c_str(), NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);
 	if(respond != IDYES) {
 		SetCurrentDirectoryW(sys32dir.c_str());
-		gr7::DeleteDirectory(updatefolder.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefolder.c_str());
 		exit(0);
 	}
 }

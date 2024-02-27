@@ -14,7 +14,7 @@
 int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText, const wchar_t *lpCmdLine)
 {
 	std::wstring driveletterD(MAX_PATH, 0);
-	driveletterD.resize((size_t)gr7::GetSystemDriveLetter(&driveletterD[0]));
+	driveletterD.resize((size_t)Grass7API::FileManagement::GetSystemDriveLetter(&driveletterD[0]));
 	MainObjects.driveletter = driveletterD;
 
 	std::wstring lpCmdLineW = lpCmdLine;
@@ -38,7 +38,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 	int archiveerr = FileManagementClass::extract(lpCmdLineW.c_str());
 	if (archiveerr != 0) {
 		SetCurrentDirectoryW(system32fld.c_str());
-		gr7::DeleteDirectory(updatefld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.ArchiveFail.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
@@ -122,7 +122,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 
 	if (lineArch != specificarch) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.ArchNotMatch.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
-		gr7::DeleteDirectory(updatefld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
@@ -132,7 +132,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 	if (lResult == ERROR_SUCCESS)
 	{
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.AlreadyInstalled.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
-		gr7::DeleteDirectory(updatefld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 		memset(hProgressText, 0, sizeof(hProgressText));
 		lineRequiredupdate.clear();
 		lineRequiredupdateW.clear();
@@ -144,7 +144,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 	if (lResult1 != ERROR_SUCCESS)
 	{
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.FailOpenKey.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
-		gr7::DeleteDirectory(updatefld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
@@ -159,7 +159,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 
 	if (platformID1W.find(szBuffer1WS) == std::wstring::npos) {
 		TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), AppResStringsObjects.NotForThis.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
-		gr7::DeleteDirectory(updatefld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 		memset(hProgressText, 0, sizeof(hProgressText));
 		exit(0);
 	}
@@ -173,7 +173,7 @@ int MainCodeClass::mainCode(HWND hProgressBar, HWND hWnd, wchar_t *hProgressText
 			ErrorString.append(AppResStringsObjects.UpdateReq2);
 
 			TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.UpdaterError.c_str(), ErrorString.c_str(), TDCBF_CLOSE_BUTTON, TD_ERROR_ICON, NULL);
-			gr7::DeleteDirectory(updatefld.c_str());
+			Grass7API::FileManagement::DeleteDirectory(updatefld.c_str());
 			memset(hProgressText, 0, sizeof(hProgressText));
 			exit(0);
 		}
