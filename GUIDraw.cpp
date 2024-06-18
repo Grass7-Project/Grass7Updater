@@ -40,16 +40,11 @@ void GUIDraw::updateProgressBar(int percentageCounter, HWND hProgressBar, HWND h
 
 void GUIDraw::CreateQuestion()
 {
-	std::wstring updatefolder = MainObjects.driveletter;
-	updatefolder.append(L"gr7updatefld");
-	std::wstring sys32dir = MainObjects.driveletter;
-	sys32dir.append(L"Windows\\System32");
-
 	int respond = 0;
 	TaskDialog(NULL, NULL, AppResStringsObjects.OSName.c_str(), AppResStringsObjects.Question.c_str(), NULL, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &respond);
 	if(respond != IDYES) {
-		SetCurrentDirectoryW(sys32dir.c_str());
-		Grass7API::FileManagement::DeleteDirectory(updatefolder.c_str());
+		SetCurrentDirectoryW(MainObjects.system32fld.c_str());
+		Grass7API::FileManagement::DeleteDirectory(MainObjects.updatefld.c_str());
 		exit(0);
 	}
 }

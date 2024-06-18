@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileManagement.cpp" />
-    <ClCompile Include="Grass7 Updater deployer.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="GUIDraw.cpp" />
     <ClCompile Include="MainCode.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />

@@ -5,6 +5,8 @@ class GlobalMain {
 public:
 	HINSTANCE hInst;
 	std::wstring driveletter;
+	std::wstring updatefld;
+	std::wstring system32fld;
 };
 
 // Application Resource Strings
