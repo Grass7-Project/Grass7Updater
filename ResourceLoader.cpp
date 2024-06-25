@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ResourceLoader.h"
-#include "Global.h"
 
 void ResourceLoader::LoadStrings()
 {

@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "GUIDraw.h"
 #include "FileManagement.h"
-#include "Global.h"
 
 void GUIDraw::OnSomeActionToRefreshValues(HWND hWnd, wchar_t *wcs)
 {

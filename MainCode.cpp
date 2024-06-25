@@ -4,7 +4,6 @@
 #include "FileManagement.h"
 #include "MainCode.h"
 #include "GUIDraw.h"
-#include "Global.h"
 #include <algorithm>
 #include <shlobj.h>
 #include <regex>
