@@ -6,10 +6,20 @@
     <RemoteDebuggerCommand>C:\remotetemp\gr7upd.exe</RemoteDebuggerCommand>
     <RemoteDebuggerCommandArguments>"C:\TestUpdate.gr7updpkg"</RemoteDebuggerCommandArguments>
     <RemoteDebuggerWorkingDirectory>C:\remotetemp</RemoteDebuggerWorkingDirectory>
-    <RemoteDebuggerServerName>TEST-PC:4020</RemoteDebuggerServerName>
+    <RemoteDebuggerServerName>192.254.2.2:4020</RemoteDebuggerServerName>
     <DeploymentDirectory>C:\remotetemp</DeploymentDirectory>
+    <AdditionalFiles>$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll;$(SolutionDir)Build\$(Platform)\$(Configuration)\7za.dll</AdditionalFiles>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RemoteDebuggerWorkingDirectory>C:\remotetemp</RemoteDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>
+    <RemoteDebuggerServerName>192.254.2.2:4020</RemoteDebuggerServerName>
+    <RemoteDebuggerCommand>C:\remotetemp\gr7upd.exe</RemoteDebuggerCommand>
+    <RemoteDebuggerCommandArguments>"C:\TestUpdate.gr7updpkg"</RemoteDebuggerCommandArguments>
+    <DeploymentDirectory>C:\remotetemp</DeploymentDirectory>
+    <AdditionalFiles>$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll;$(SolutionDir)Build\$(Platform)\$(Configuration)\7za.dll</AdditionalFiles>
   </PropertyGroup>
 </Project>

@@ -1,6 +1,11 @@
-class FileManagementClass {
+#pragma once
+
+class FileManagement {
 public:
-	static int extract(LPCWSTR archivefile);
+	static void totalCallback(uint64_t total_size);
+	static bool progressCallback(uint64_t Size);
+	static BOOL extract(std::wstring &archivefile);
 private:
-	int pwdProceed;
+	BOOL pwdProceed;
+	uint64_t TotalSize;
 };

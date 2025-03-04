@@ -11,6 +11,7 @@
 #include <tchar.h>
 #include "resource.h"
 #include <Windows.h>
+#include <shobjidl.h>
 #include <commctrl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -20,6 +21,16 @@
 #include <string>
 #include <fstream>
 #include <Gr7API.h>
+
+#include <string.h>
+#include <sstream>
+#include <algorithm>
+#include <shlobj.h>
+#include <regex>
+#include <vector>
+#include <filesystem>
+#include <map>
+
 #include "Global.h"
 
 #ifndef WIN32_LEAN_AND_MEAN

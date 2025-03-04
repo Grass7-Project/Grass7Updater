@@ -3,10 +3,14 @@
 #include "GUIDraw.h"
 #include "MainCode.h"
 
-TCHAR wcs[MAX_PATH];
+MainGUI MainGUIObjects;
 
-int MainGUI::Init(HWND &hWnd, HINSTANCE &hInstance, LPTSTR &lpCmdLine)
+int MainGUI::Init()
 {
+	if (FAILED(CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, (void **)&MainObjects.m_pITaskBarList3))) {
+		return 1;
+	}
+
 	INITCOMMONCONTROLSEX iccex;
 	iccex.dwSize = sizeof(iccex);
 	iccex.dwICC = ICC_PROGRESS_CLASS;
@@ -23,17 +27,14 @@ int MainGUI::Init(HWND &hWnd, HINSTANCE &hInstance, LPTSTR &lpCmdLine)
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpszClassName = L"GRASS7UPDATER";
 	wcex.hbrBackground = hb;
-	wcex.hCursor = LoadCursorW(hInstance, IDC_ARROW);
+	wcex.hCursor = LoadCursorW(MainObjects.hInst, IDC_ARROW);
 	wcex.lpfnWndProc = WndProc;
-	wcex.hInstance = hInstance;
+	wcex.hInstance = MainObjects.hInst;
 
 	if (!RegisterClassExW(&wcex))
 		return 1;
 
-	int x = GetSystemMetrics(SM_CXSCREEN);
-	int y = GetSystemMetrics(SM_CYSCREEN);
-
-	hWnd = ::CreateWindowExW(
+	MainObjects.hWndMainWindow = ::CreateWindowExW(
 		0,
 		L"GRASS7UPDATER",
 		AppResStringsObjects.OSName.c_str(),
@@ -42,17 +43,15 @@ int MainGUI::Init(HWND &hWnd, HINSTANCE &hInstance, LPTSTR &lpCmdLine)
 		0,
 		386,
 		155,
-		NULL,
-		NULL,
-		hInstance,
-		NULL);
+		nullptr,
+		nullptr,
+		MainObjects.hInst,
+		nullptr);
 
-	if (!hWnd)
+	if (!MainObjects.hWndMainWindow)
 		return 1;
 
-	HWND hSmoothProgressCtrl;
-
-	hSmoothProgressCtrl = ::CreateWindowExW(
+	MainGUIObjects.hSmoothProgressCtrl = ::CreateWindowExW(
 		0,
 		PROGRESS_CLASS,
 		L"",
@@ -61,22 +60,31 @@ int MainGUI::Init(HWND &hWnd, HINSTANCE &hInstance, LPTSTR &lpCmdLine)
 		40,
 		346,
 		20,
-		hWnd,
+		MainObjects.hWndMainWindow,
 		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		hInstance,
-		NULL);
+		MainObjects.hInst,
+		nullptr);
 
-	wcsncat_s(wcs, AppResStringsObjects.Installing.c_str(), 256);
-	wcsncat_s(wcs, L"0%", 256);
-	::SendMessageW(hSmoothProgressCtrl, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	std::thread MainCodeThread(MainCodeClass::mainCode, std::ref(hSmoothProgressCtrl), std::ref(hWnd), std::ref(wcs), std::ref(lpCmdLine));
+	if (!MainGUIObjects.hSmoothProgressCtrl)
+		return 1;
+
+	MainObjects.ExtractionPercentage = 0;
+
+	GUIDraw::CreateQuestion();
+
+	ShowWindow(MainObjects.hWndMainWindow, SW_SHOWDEFAULT);
+	UpdateWindow(MainObjects.hWndMainWindow);
+
+	std::thread MainCodeThread(MainCode::mainCode, std::ref(MainObjects.CommandLine));
 	MainCodeThread.detach();
 
 	MSG msg;
-	while (::GetMessageW(&msg, hWnd, 0, 0) > 0)
-		::DispatchMessageW(&msg);
+	while (GetMessageW(&msg, nullptr, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessageW(&msg);
+	}
 
-	::UnregisterClassW(wcex.lpszClassName, hInstance);
+	::UnregisterClassW(wcex.lpszClassName, MainObjects.hInst);
 
 	return (int)msg.wParam;
 }
@@ -89,7 +97,7 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-		GUIDraw::DrawValues(hdc, wcs);
+		GUIDrawUpdateWindow(MainObjects.ExtractionPercentage, MainGUIObjects.hSmoothProgressCtrl, MainObjects.hWndMainWindow, hdc, AppResStringsObjects.Extracting);
 		EndPaint(hWnd, &ps);
 	}
 	break;
