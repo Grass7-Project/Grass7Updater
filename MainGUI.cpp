@@ -97,7 +97,7 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-		GUIDrawUpdateWindow(MainObjects.ExtractionPercentage, MainGUIObjects.hSmoothProgressCtrl, MainObjects.hWndMainWindow, hdc, AppResStringsObjects.Extracting);
+		GUIDraw::updateWindow(MainObjects.ExtractionPercentage, MainGUIObjects.hSmoothProgressCtrl, MainObjects.hWndMainWindow, hdc, AppResStringsObjects.Extracting);
 		EndPaint(hWnd, &ps);
 	}
 	break;

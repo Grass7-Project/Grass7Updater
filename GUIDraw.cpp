@@ -4,7 +4,7 @@
 
 GUIDraw GUIDrawObjects;
 
-void GUIDrawUpdateWindow(int percentageCounter, HWND &hProgressBar, HWND &hWnd, HDC &hdc, std::wstring &hProgressText)
+void GUIDraw::updateWindow(int percentageCounter, HWND &hProgressBar, HWND &hWnd, HDC &hdc, std::wstring &hProgressText)
 {
 	RECT rchWnd;
 	std::wstring percentage(MAX_PATH, 0);
