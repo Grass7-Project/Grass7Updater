@@ -52,15 +52,4 @@ void ConfigManager::SetValue(std::wstring &Key, std::wstring &Value)
 			break;
 		}
 	}
-
-	if (!Key.compare(L"UpdateID"))
-		ConfigObjects.UpdateID = Value;
-	if (!Key.compare(L"arch"))
-		ConfigObjects.Architecture = Value;
-	if (!Key.compare(L"requiredupdate"))
-		ConfigObjects.RequiredUpdate = Value;
-	if (!Key.compare(L"OScommands")) {
-		if (Value.find(L"true") != std::wstring::npos)
-			ConfigObjects.OSCommands = TRUE;
-	}
 }
